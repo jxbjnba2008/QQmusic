@@ -19,13 +19,13 @@ class QqspiderSpider(CrawlSpider):
         singermid_list = response.xpath('//*[@id="mod-singerlist"]/ul/li/a/@data-singermid').extract()
         
         #通过singermid获取歌手URL，进入歌手页面，这里只获取前两个歌手
-        for singermid in singermid_list[0:2]:
+        for singermid in singermid_list[0:1]:
             #歌手页面初始URL
             singer_url = 'https://c.y.qq.com/v8/fcg-bin/fcg_v8_singer_track_cp.fcg?loginUin=981608482&hostUin=0&format=jsonp&inCharset=utf8&outCharset=utf-8&notice=0&platform=yqq&needNewCode=0&singermid={}&order=listen&begin=0&num=30&songstatus=1'.format(singermid)
             #Request的get请求歌曲页面
             yield Request(singer_url,callback=self.song_parse)
         #获取下一页的歌手列表，这里只获取前两页
-        if self.page<3:
+        if self.page<2:
             self.page += 1
         yield Request(self.url+str(self.page),callback=self.parse)
 
