@@ -14,4 +14,6 @@ class QqmusicItem(scrapy.Item):
     singermid = scrapy.Field()
     singer = scrapy.Field()
     song = scrapy.Field()
+    albumname = scrapy.Field()
+    time = scrapy.Field()
     
