@@ -42,6 +42,8 @@ class QqspiderSpider(CrawlSpider):
             item = QqmusicItem()
             item['singer'] = data['data']['singer_name']
             item['song'] = song['musicData']['songname']
+            item['albumname'] = song['musicData']['albumname']
+            item['time'] = song['musicData']['interval']
             yield item
         #计算每个歌手的歌曲总页数
         pages = math.ceil(int(total)/30)
