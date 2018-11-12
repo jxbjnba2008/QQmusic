@@ -12,5 +12,5 @@ class QqmusicPipeline(object):
         self.spider = self.connect.qqmusic
         self.col = self.spider.musicdata
     def process_item(self, item, spider):
-        self.col.insert({'singer':item['singer'],'song':item['song']})
+        self.col.insert({'singer':item['singer'],'song':item['song'],'albumname':item['albumname'],'time':item['time']})
         return item
