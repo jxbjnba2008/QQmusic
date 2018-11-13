@@ -16,4 +16,5 @@ class QqmusicItem(scrapy.Item):
     song = scrapy.Field()
     albumname = scrapy.Field()
     time = scrapy.Field()
+    download_url = scrapy.Field()
     
