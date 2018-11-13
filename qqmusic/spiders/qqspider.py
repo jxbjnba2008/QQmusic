@@ -3,6 +3,7 @@ from scrapy.spider import CrawlSpider,Rule
 from scrapy.linkextractors import LinkExtractor
 from qqmusic.items import QqmusicItem
 from scrapy.http import Request
+import requests
 import json,re,math
 
 class QqspiderSpider(CrawlSpider):
@@ -38,12 +39,21 @@ class QqspiderSpider(CrawlSpider):
         total = data['data']['total']
         song_list = data['data']['list'] 
         singermid = data['data']['singer_mid']
+        
         for song in song_list:
             item = QqmusicItem()
             item['singer'] = data['data']['singer_name']
             item['song'] = song['musicData']['songname']
             item['albumname'] = song['musicData']['albumname']
             item['time'] = song['musicData']['interval']
+            #获取歌曲唯一标识songmid
+            songmid = song['musicData']['songmid']
+            #对歌曲播放链接进行请求获取下载的链接
+            re = requests.get('https://u.y.qq.com/cgi-bin/musicu.fcg?g_tk=1086724312&loginUin=981608482&hostUin=0&format=jsonp&inCharset=utf8&outCharset=utf-8&notice=0&platform=yqq&needNewCode=0&data=%7B%22req%22%3A%7B%22module%22%3A%22CDN.SrfCdnDispatchServer%22%2C%22method%22%3A%22GetCdnDispatch%22%2C%22param%22%3A%7B%22guid%22%3A%226992874192%22%2C%22calltype%22%3A0%2C%22userip%22%3A%22%22%7D%7D%2C%22req_0%22%3A%7B%22module%22%3A%22vkey.GetVkeyServer%22%2C%22method%22%3A%22CgiGetVkey%22%2C%22param%22%3A%7B%22guid%22%3A%226992874192%22%2C%22songmid%22%3A%5B%22{}%22%5D%2C%22songtype%22%3A%5B0%5D%2C%22uin%22%3A%22981608482%22%2C%22loginflag%22%3A1%2C%22platform%22%3A%2220%22%7D%7D%2C%22comm%22%3A%7B%22uin%22%3A981608482%2C%22format%22%3A%22json%22%2C%22ct%22%3A20%2C%22cv%22%3A0%7D%7D'.format(songmid))
+            js = json.loads(re.content)
+            purl = js['req_0']['data']['midurlinfo'][0]['purl']
+            download_url = 'http://dl.stream.qqmusic.qq.com/{}'.format(purl)
+            item['download_url'] = download_url
             yield item
         #计算每个歌手的歌曲总页数
         pages = math.ceil(int(total)/30)
