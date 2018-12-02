@@ -1,10 +1,15 @@
 # -*- coding: utf-8 -*-
-from scrapy.spider import CrawlSpider,Rule
-from scrapy.linkextractors import LinkExtractor
-from qqmusic.items import QqmusicItem
-from scrapy.http import Request
+import json
+import math
+import re
+
 import requests
-import json,re,math
+from scrapy.http import Request
+from scrapy.linkextractors import LinkExtractor
+from scrapy.spider import CrawlSpider, Rule
+
+from qqmusic.items import QqmusicItem
+
 
 class QqspiderSpider(CrawlSpider):
     name = 'qqspider'
