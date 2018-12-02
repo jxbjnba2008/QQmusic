@@ -15,18 +15,20 @@ class QqspiderSpider(CrawlSpider):
 
     def parse(self, response):
         '''通过selenium获取所有qq音乐歌手唯一标识singermid'''
-        
+        #首页的带图标的歌手
+        singermid_list2 = response.xpath('//*[@id="mod-singerlist"]/div[1]/ul/li/div/a/@data-singermid').extract()
         #获取歌手列表
-        singermid_list = response.xpath('//*[@id="mod-singerlist"]/ul/li/a/@data-singermid').extract()
-        
+        singermid_list1 = response.xpath('//*[@id="mod-singerlist"]/ul/li/a/@data-singermid').extract()
+        if singermid_list2:
+            singermid_list1.extend(singermid_list2)
         #通过singermid获取歌手URL，进入歌手页面，这里只获取前两个歌手
-        for singermid in singermid_list[0:1]:
+        for singermid in singermid_list1:
             #歌手页面初始URL
             singer_url = 'https://c.y.qq.com/v8/fcg-bin/fcg_v8_singer_track_cp.fcg?loginUin=981608482&hostUin=0&format=jsonp&inCharset=utf8&outCharset=utf-8&notice=0&platform=yqq&needNewCode=0&singermid={}&order=listen&begin=0&num=30&songstatus=1'.format(singermid)
             #Request的get请求歌曲页面
             yield Request(singer_url,callback=self.song_parse)
-        #获取下一页的歌手列表，这里只获取前两页
-        if self.page<2:
+        #获取下一页的歌手列表
+        if self.page<297:
             self.page += 1
         yield Request(self.url+str(self.page),callback=self.parse)
 
